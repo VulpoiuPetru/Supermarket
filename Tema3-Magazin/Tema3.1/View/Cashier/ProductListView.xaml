@@ -1,0 +1,129 @@
+﻿<Window x:Class="Tema3._1.View.Cashier.ProductListView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tema3._1.View.Cashier"
+        xmlns:viewModels="clr-namespace:Tema3._1.ViewModel"
+        xmlns:converters="clr-namespace:Tema3._1.Converters"
+        mc:Ignorable="d"
+        Title="ProductListView" Height="450" Width="800">
+    <Window.DataContext>
+        <viewModels:StockVM />
+    </Window.DataContext>
+    <Window.Resources>
+        <converters:FilterConvert x:Key="FilterConvert"/>
+        <converters:StockConvert x:Key="StockConvert"/>
+        <converters:StockProductConvert x:Key="StockProductConvert"/>
+
+        <!-- Style for rounded buttons -->
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3C8DBC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for rounded TextBox -->
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#3C8DBC"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for DataGrid -->
+        <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#3C8DBC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="RowBackground" Value="#F0F0F0"/>
+            <Setter Property="AlternatingRowBackground" Value="#E0E0E0"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#3C8DBC"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid Name="productGrid" AutoGenerateColumns="False" 
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding StocksList}" 
+                  Style="{StaticResource CustomDataGridStyle}" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductID, Converter={StaticResource StockProductConvert}}" />
+                <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate}"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Product.BarCode}"/>
+                <DataGridTextColumn Header="Producer Name" Binding="{Binding Product.Producer.Name}"/>
+                <DataGridTextColumn Header="Category Name" Binding="{Binding Product.Category.Name}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label x:Name="lblMessage" Content="{Binding ErrorMessage}" FontSize="15" Foreground="Red" 
+               Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <Label Width="150" FontSize="15">Filter input:</Label>
+            <TextBox x:Name="txtFilterInput" Width="200" Style="{StaticResource RoundedTextBoxStyle}" Margin="0,0,10,0"/>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" Margin="0,0,10,0">
+            <Label Width="150" FontSize="15">Filter after:</Label>
+            <ComboBox Name="filterComboBox" Width="110" SelectedIndex="0">
+                <ComboBoxItem Content="Name"/>
+                <ComboBoxItem Content="Barcode"/>
+                <ComboBoxItem Content="Expiration date"/>
+                <ComboBoxItem Content="Producer"/>
+                <ComboBoxItem Content="Category"/>
+            </ComboBox>
+        </WrapPanel>
+
+        <Button Content="Search" Command="{Binding FilterCommand}" Style="{StaticResource RoundedButtonStyle}" 
+                Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Margin="631,0,0,0" Width="85">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource FilterConvert}" >
+                    <Binding ElementName="txtFilterInput" Path="Text"/>
+                    <Binding ElementName="filterComboBox" Path="Text"/>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+    </Grid>
+</Window>

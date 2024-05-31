@@ -1,0 +1,105 @@
+﻿<Window x:Class="Tema3._1.View.Register"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:Tema3._1.Converters"
+        xmlns:viewModel="clr-namespace:Tema3._1.ViewModel"
+        xmlns:local="clr-namespace:Tema3._1.View"
+        mc:Ignorable="d"
+        Title="Register" Height="450" Width="800" Background="#FF2C3E50" Foreground="White">
+
+    <Window.DataContext>
+        <viewModel:UserVM/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <converters:EmployeeConvert x:Key="EmployeeConvert"/>
+
+        <!-- Style for TextBox with rounded corners -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF1ABC9C"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="15"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for PasswordBox with rounded corners -->
+        <Style TargetType="PasswordBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF1ABC9C"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="15"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Button with rounded corners -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FF1ABC9C"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="0" 
+                                CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Button Content="Create" HorizontalAlignment="Left" Margin="336,269,0,0" VerticalAlignment="Top" Width="209" Height="40" Command="{Binding AddCommand}">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource EmployeeConvert}">
+                    <Binding ElementName="usernameBox" Path="Text"/>
+                    <Binding ElementName="userTypeComboBox" Path="Text"/>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+
+        <TextBox x:Name="usernameBox" HorizontalAlignment="Left" Margin="336,136,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="209" Height="39"/>
+        <Label Content="Username" HorizontalAlignment="Left" Margin="231,136,0,0" VerticalAlignment="Top"  Foreground="White" Height="32" Width="86" FontSize="16"/>
+        <Label Content="Password" HorizontalAlignment="Left" Margin="231,191,0,0" VerticalAlignment="Top" Foreground="White" Height="32" Width="86" FontSize="16"/>
+        <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="336,191,0,0" VerticalAlignment="Top" Width="209" Height="39" PasswordChanged="PasswordBox_PasswordChanged" />
+        <ComboBox x:Name="userTypeComboBox" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="587,175,0,0" SelectedIndex="0" >
+            <ComboBoxItem Content="admin"/>
+            <ComboBoxItem Content="cashier"/>
+        </ComboBox>
+
+    </Grid>
+</Window>
